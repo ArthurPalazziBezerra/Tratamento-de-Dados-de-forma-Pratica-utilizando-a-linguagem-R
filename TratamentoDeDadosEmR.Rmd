@@ -1,0 +1,87 @@
+```{r}
+#Aqui carregamos na variavel "dados" uma planilha
+dados <- read.csv("Tempo.csv",sep = ";", na.strings = "", stringsAsFactors = T)
+#Afim de visualizar informações da planilha, vamos visualizar as 5 primeiras linhas e gerar um resumo logo em seguida
+head(dados)
+summary(dados)
+```
+
+```{r}
+#Usei a variavel "counts" para agrupar diferentes colunas da planilha, depois fiz um grafico de barras simples para analisar os valores contidos em cada coluna
+counts <- table(dados$Aparencia)
+counts
+barplot(counts, main = "Aparencia", xlab = "Aparencia")
+#Vento
+counts <- table(dados$Vento)
+counts
+barplot(counts, main = "Vento", xlab = "Vento")
+#jogar
+counts = table(dados$Jogar)
+counts
+barplot(counts, main="Jogar", xlab="Jogar")
+
+
+```
+
+```{r}
+#A coluna temperatura é uma coluna com valores numericos, então tratei ela de uma forma diferente, com box plot, sumario e histogramas afim de verificar a existencia de valores outliers   
+summary(dados$Temperatura)
+boxplot(dados$Temperatura)
+hist(dados$Temperatura)
+```
+
+```{r}
+#Realizei o mesmo tratamento anterior com a coluna Umidade, verificando valores outliers
+summary(dados$Umidade)
+boxplot(dados$Umidade)
+hist(dados$Umidade)
+```
+
+```{r}
+#Usei a função complete cases para percorrer linhas com valores NA´s
+dados[!complete.cases(dados), ] 
+```
+
+```{r}
+#Observando a coluna Aparencia, percebi um valor distoante, o valor "menos", então irei substitui-lo pela moda que é "sol", importante também usarmos factor para não deixar vestigio deste "menos"
+summary(dados$Aparencia)
+dados[is.na(dados$Aparencia),]
+dados[dados$Aparencia == 'menos',]$Aparencia = "sol"
+dados$Aparencia = factor(dados$Aparencia)
+
+```
+
+```{r}
+#Nesta linha tratei os valores outliers presentes na coluna temperatura, substituindo-as pela mediana
+summary(dados$Temperatura)
+dados[dados$Temperatura < -135| dados$Temperatura > 130,]$Temperatura = median(dados$Temperatura)
+```
+
+```{r}
+#Tratei também os valores outliers na coluna "Umidade", substituindo-as pela mediana
+summary(dados$Umidade)
+#ver umidades anormais
+dados[dados$Umidade < 0 | dados$Umidade > 100 ,]$Umidade
+#Verifica NAs
+dados[is.na(dados$Umidade),]
+#atribuir mediana a NAs
+dados[is.na(dados$Umidade),]$Umidade = median(dados$Umidade,na.rm = T)
+#subtituição
+dados[dados$Umidade < 0 | dados$Umidade > 100 ,]$Umidade = median(dados$Umidade) 
+#buscamos novamente umidades anormais
+dados[dados$Umidade < 0 | dados$Umidade > 100 ,]
+summary(dados$Umidade)
+```
+
+```{r}
+#Na coluna "Vento" percebi que a valores NA´s, observe o tratamento:
+summary(dados$Vento)
+#Verifica NAs
+dados[is.na(dados$Vento),]
+#substitui
+dados[is.na(dados$Vento),]$Vento = 'FALSO'
+#Verifica NAs
+dados[is.na(dados$Vento),]
+summary(dados$Vento)
+```
+
